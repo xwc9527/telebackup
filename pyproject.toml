@@ -34,7 +34,8 @@ proxy = ["PySocks>=1.7.0"]
 all = ["cryptg>=0.4.0", "PySocks>=1.7.0"]
 
 [project.urls]
-Homepage = "https://github.com/xwc9527/TeleGet"
+Homepage = "https://chatdex.cc"
+Documentation = "https://chatdex.cc"
 Repository = "https://github.com/xwc9527/TeleGet"
 Issues = "https://github.com/xwc9527/TeleGet/issues"
 

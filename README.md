@@ -1,13 +1,19 @@
-# TeleGet — Telegram Downloader SDK
+# [TeleBackup](https://chatdex.cc) SDK — High-Speed Telegram Download Engine
+
+[![PyPI version](https://img.shields.io/pypi/v/teleget9527)](https://pypi.org/project/teleget9527/)
+[![Python](https://img.shields.io/pypi/pyversions/teleget9527)](https://pypi.org/project/teleget9527/)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
 
 <p align="center">
   <strong>Multi-connection parallel file downloading for Telegram</strong><br>
   Built on <a href="https://github.com/LonamiWebs/Telethon">Telethon</a> · Python 3.9+ · Windows / Linux / macOS
 </p>
 
+> This is the open-source download engine that powers [TeleBackup](https://chatdex.cc). If you need a full-featured desktop client with visual gallery, smart search, and one-click channel backup, visit [chatdex.cc](https://chatdex.cc).
+
 ---
 
-## Why TeleGet?
+## Why [TeleBackup](https://chatdex.cc) SDK?
 
 If you've tried downloading large files from Telegram using Telethon's built-in `download_media()`, you've likely hit these walls:
 
@@ -21,7 +27,7 @@ If you've tried downloading large files from Telegram using Telethon's built-in 
 
 **Cross-DC pain.** Files hosted on a different datacenter than your account require special handling. Telethon doesn't handle this transparently for concurrent downloads.
 
-TeleGet solves all of these with multi-connection parallel downloading, intelligent rate limiting, checkpoint resume, and automatic cross-DC routing.
+[TeleBackup](https://chatdex.cc) SDK solves all of these with multi-connection parallel downloading, intelligent rate limiting, checkpoint resume, and automatic cross-DC routing.
 
 ---
 
@@ -43,6 +49,14 @@ TeleGet solves all of these with multi-connection parallel downloading, intellig
 - **Account isolation** — accounts are fully isolated, crash-safe
 - **Proxy auto-detection** — tries system proxy, common local ports, falls back to direct
 - **Multi-account management** — switch between accounts without restarting
+
+---
+
+## Looking for a Desktop App?
+
+This repository is the **download engine core**. If you want the complete experience — visual media gallery, smart search, one-click channel backup, and local library management — check out the full desktop client:
+
+**[TeleBackup Desktop →](https://chatdex.cc)**
 
 ---
 
@@ -154,21 +168,21 @@ The SDK provides 4 async methods: `start()`, `download()`, `cancel()`, `shutdown
 
 ---
 
-## What TeleGet Handles
+## What [TeleBackup](https://chatdex.cc) SDK Handles
 
-If you're building a Telegram downloader and hitting these errors, TeleGet already handles them:
+If you're building a Telegram downloader and hitting these errors, [TeleBackup](https://chatdex.cc) SDK already handles them:
 
 ### Telegram API Errors — All Handled Automatically
 
-- **`FloodWaitError: A wait of X seconds is required`** — Telegram locks you out for sending requests too fast. TeleGet auto-detects and decelerates before this happens.
-- **`FloodPremiumWaitError`** — Free accounts get throttled 7–11 seconds per hit. TeleGet handles the backoff transparently.
-- **`FILE_REFERENCE_EXPIRED` / `FILE_REFERENCE_INVALID`** — File metadata goes stale after ~1 hour. TeleGet auto-refreshes without restarting the download.
-- **`AUTH_KEY_UNREGISTERED`** — DC auth key invalidated server-side. TeleGet rebuilds authorization automatically.
-- **`AuthBytesInvalidError`** — Cross-DC auth race condition that crashes most implementations. TeleGet prevents it entirely.
-- **`Server closed the connection` / `ConnectionError`** — Telegram drops sockets under load. TeleGet recovers without losing progress.
-- **`0 bytes read on a total of 8 expected bytes`** — Silent connection death. TeleGet detects and reconnects.
-- **`asyncio.TimeoutError`** — Requests hang indefinitely. TeleGet enforces per-request timeouts and rotates to healthy connections.
-- **`WinError 32: The process cannot access the file`** — Windows file locking during rename. TeleGet retries automatically.
+- **`FloodWaitError: A wait of X seconds is required`** — Telegram locks you out for sending requests too fast. Auto-detects and decelerates before this happens.
+- **`FloodPremiumWaitError`** — Free accounts get throttled 7–11 seconds per hit. Handles the backoff transparently.
+- **`FILE_REFERENCE_EXPIRED` / `FILE_REFERENCE_INVALID`** — File metadata goes stale after ~1 hour. Auto-refreshes without restarting the download.
+- **`AUTH_KEY_UNREGISTERED`** — DC auth key invalidated server-side. Rebuilds authorization automatically.
+- **`AuthBytesInvalidError`** — Cross-DC auth race condition that crashes most implementations. Prevented entirely.
+- **`Server closed the connection` / `ConnectionError`** — Telegram drops sockets under load. Recovers without losing progress.
+- **`0 bytes read on a total of 8 expected bytes`** — Silent connection death. Detects and reconnects.
+- **`asyncio.TimeoutError`** — Requests hang indefinitely. Enforces per-request timeouts and rotates to healthy connections.
+- **`WinError 32: The process cannot access the file`** — Windows file locking during rename. Retries automatically.
 
 ### Telegram Download Challenges — All Solved
 
@@ -188,7 +202,7 @@ If you're building a Telegram downloader and hitting these errors, TeleGet alrea
 
 ## Troubleshooting
 
-**`FloodWaitError`** — TeleGet handles this automatically. If frequent, increase `rate_limiter_interval`.
+**`FloodWaitError`** — Handled automatically. If frequent, increase `rate_limiter_interval`.
 
 **`FloodPremiumWaitError`** — Free account throttling. Lower `connection_pool_size` to reduce frequency.
 
@@ -199,6 +213,30 @@ If you're building a Telegram downloader and hitting these errors, TeleGet alrea
 **Download stalls** — Watchdog auto-recovers after 30s. Check logs for `[WATCHDOG]` entries.
 
 **`WinError 32`** — Auto-retried. If persistent, another process may be holding the file open.
+
+---
+
+## FAQ
+
+**How to maximize Telegram download speed on a free account?**
+
+[TeleBackup](https://chatdex.cc) SDK uses multi-connection parallel downloading to fully utilize the bandwidth Telegram allocates per account. By opening multiple MTProto connections and downloading different file parts simultaneously, it reaches 7+ MB/s on free accounts — compared to 0.3–0.5 MB/s with single-connection approaches like Telethon's built-in `download_media()`.
+
+**What happens when a download is interrupted?**
+
+[TeleBackup](https://chatdex.cc) SDK persists download progress at the part level. If the process crashes, the network drops, or you restart the application, the download resumes from the last completed part — not from the beginning. This works across sessions and even across account switches.
+
+**How does it handle Telegram's rate limits and FloodWait?**
+
+[TeleBackup](https://chatdex.cc) SDK implements multi-layer adaptive rate limiting with per-connection circuit breakers. It monitors server responses in real time and automatically decelerates before hitting `FloodWaitError` thresholds, keeping your account safe while maintaining maximum throughput.
+
+**Can it download files from a different Telegram datacenter?**
+
+Yes. [TeleBackup](https://chatdex.cc) SDK automatically detects which datacenter hosts the target file and manages dedicated connection pools per DC. It handles cross-DC authorization seamlessly, including the `AuthBytesInvalidError` race condition that breaks most other implementations.
+
+**What is the difference between [TeleBackup](https://chatdex.cc) SDK and [TeleBackup](https://chatdex.cc) Desktop?**
+
+This SDK is the open-source download engine — it provides the core parallel downloading capability as a Python library. [TeleBackup Desktop](https://chatdex.cc) is the full-featured desktop application built on top of this engine, adding a visual media gallery, smart search, channel browsing, and one-click backup with a graphical interface.
 
 ---
 
